@@ -1,0 +1,45 @@
+// app/api/auth/[...auth].ts
+import { passportAuth } from "@blitzjs/auth"
+import { api } from "app/blitz-server"
+import { Strategy as GithubStrategy } from "passport-github2"
+import db from "db"
+import { env } from "process"
+
+export default api(passportAuth({
+  successRedirectUrl: "/",
+  errorRedirectUrl: "/",
+  strategies: [
+    {
+      strategy: new GithubStrategy(
+        { clientID: env.GITHUB_ID as string, clientSecret: env.GITHUB_SECRET as string ,
+          callbackURL: "https://3000-iojcde-notething-v2g2jzllxcl.ws-us54.gitpod.io/api/auth/github/callback"},
+        async function (_token, _tokenSecret, profile, done) {
+          const email = profile.emails && profile.emails[0]?.value
+
+          if (!email) {
+            // This can happen if you haven't enabled email access in your twitter app permissions
+            return done(new Error("Twitter OAuth response doesn't have email."))
+          }
+
+          const user = await db.user.upsert({
+            where: { email },
+            create: {
+              email,
+              name: profile.displayName,
+            },
+            update: { email },
+          })
+
+          const publicData = {
+            userId: user.id,
+            profile: profile.avatar_url,
+            roles: [user.role],
+            source: "github",
+          }
+          done(undefined, { publicData })
+        }
+      ), // Provide initialized passport strategy here
+    },
+  ],
+})
+)
