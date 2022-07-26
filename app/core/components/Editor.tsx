@@ -5,7 +5,7 @@ import TextareaMarkdown, { TextareaMarkdownRef } from "textarea-markdown-editor"
 
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-import rehypePrism from 'rehype-prism-plus'
+import rehypePrism from "rehype-prism-plus"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import rehypeSlug from "rehype-slug"
 
@@ -22,7 +22,7 @@ const Preview: React.FC<{ content: string }> = ({ content }) => (
   <div className="overflow-y-scroll w-full h-full float-right bg-white border rounded-r-md ">
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings,rehypePrism]}
+      rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings, [rehypePrism, { ignoreMissing: true }]]}
       className="prose prose-slate max-w-none p-4 w-full h-full break-all"
     >
       {content}
@@ -30,12 +30,15 @@ const Preview: React.FC<{ content: string }> = ({ content }) => (
   </div>
 )
 
-const Editor: React.FC<{ filename: string; content: string }> = ({
-  filename,
-  content: initialContent,
-}) => {
+const Editor: React.FC<{
+  filename: string
+  content: string
+  remove?: () => void
+  setFilename: (filename: string) => void
+  onContentChange: React.ChangeEventHandler
+}> = ({ filename, content, onContentChange }) => {
   const [layout, setLayout] = useState<"editor" | "both" | "preview">("editor")
-  const [content, setContent] = useState(initialContent)
+
   const ref = useRef<TextareaMarkdownRef>(null)
 
   return (
@@ -89,7 +92,7 @@ const Editor: React.FC<{ filename: string; content: string }> = ({
             <TextareaMarkdown.Wrapper ref={ref}>
               <textarea
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
+                onChange={onContentChange}
                 className="prose max-w-none prose-sm prose-neutral outline-none scrollbar p-4 w-full border font-mono h-full resize-none rounded-md"
               />
             </TextareaMarkdown.Wrapper>
@@ -102,7 +105,7 @@ const Editor: React.FC<{ filename: string; content: string }> = ({
                 <TextareaMarkdown.Wrapper ref={ref}>
                   <textarea
                     value={content}
-                    onChange={(e) => setContent(e.target.value)}
+                    onChange={onContentChange}
                     className="prose max-w-none prose-sm prose-neutral outline-none scrollbar p-4 w-full border font-mono rounded-l-md h-full resize-none "
                   />
                 </TextareaMarkdown.Wrapper>
