@@ -13,7 +13,7 @@ generator client {
 // --------------------------------------
 
 model User {
-  id             Int      @id @default(autoincrement())
+  id             Int      @id @default(sequence())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   name           String?
@@ -26,7 +26,7 @@ model User {
 }
 
 model Session {
-  id                 Int       @id @default(autoincrement())
+  id                 Int       @id @default(sequence())
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   expiresAt          DateTime?
@@ -41,7 +41,7 @@ model Session {
 }
 
 model Token {
-  id          Int      @id @default(autoincrement())
+  id          Int      @id @default(sequence())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   hashedToken String
@@ -65,13 +65,13 @@ model Token {
 // }
 
 model Post {
-  id    String   @id @default(uuid())
+  id    String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title String
   files File[]
 }
 
 model File {
-  id Int @id @default(autoincrement())
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -79,6 +79,6 @@ model File {
   filename String
   content  String
 
-  post   Post @relation(fields: [postId], references: [id])
-  postId String
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String @db.Uuid()
 }
