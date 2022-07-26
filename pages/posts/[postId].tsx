@@ -35,7 +35,7 @@ export const Post = () => {
           onClick={async () => {
             if (window.confirm("This will be deleted")) {
               await deletePostMutation({ id: post.id })
-              router.push({ pathname: "/posts" })
+              await router.push({ pathname: "/posts" })
             }
           }}
           style={{ marginLeft: "0.5rem" }}

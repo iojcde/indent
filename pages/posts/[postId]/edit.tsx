@@ -47,7 +47,7 @@ export const EditPost = () => {
                 ...values,
               })
               await setQueryData(updated)
-              router.push({ pathname: `/posts/[postId]`, query: { postId: updated.id } })
+              await router.push({ pathname: `/posts/[postId]`, query: { postId: updated.id } })
             } catch (error: any) {
               console.error(error)
               return {

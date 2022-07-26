@@ -1,3 +1,4 @@
+import { Ctx } from "blitz"
 import db from "db"
 import { z } from "zod"
 
@@ -11,7 +12,7 @@ export default async function UpdateFile(input, ctx: Ctx) {
   ctx.session.$isAuthorized()
 
   // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-  const file = await db.file.update({ where: { id: input.id }, input })
+  const file = await db.file.update({ where: { id: input.id }, data: input })
 
   return file
 }
