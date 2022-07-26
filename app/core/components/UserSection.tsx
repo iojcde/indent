@@ -46,10 +46,6 @@ const UserSection = () => {
 
       {!user && (
         <>
-          {" "}
-          <Link href={Routes.SignupPage()}>
-            <a className="button small">Sign Up</a>
-          </Link>
           <Link href={Routes.LoginPage()}>
             <a className="button small">Login</a>
           </Link>

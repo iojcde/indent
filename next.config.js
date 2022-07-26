@@ -1,7 +1,8 @@
 const { withBlitz } = require("@blitzjs/next")
 
 module.exports = withBlitz({
-  reactOnRecoverableError: (...args) => {
-    console.error(...args)
+  images: {
+    domains: ["avatars.githubusercontent.com"],
   },
+  swcMinify: true
 })
