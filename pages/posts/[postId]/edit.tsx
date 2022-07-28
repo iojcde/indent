@@ -32,30 +32,6 @@ export const EditPost = () => {
       <div>
         <h1>Edit Post {post.id}</h1>
         <pre>{JSON.stringify(post, null, 2)}</pre>
-
-        <PostForm
-          submitText="Update Post"
-          // TODO use a zod schema for form validation
-          //  - Tip: extract mutation's schema into a shared `validations.ts` file and
-          //         then import and use it here
-          // schema={UpdatePost}
-          initialValues={post}
-          onSubmit={async (values) => {
-            try {
-              const updated = await updatePostMutation({
-                id: post.id,
-                ...values,
-              })
-              await setQueryData(updated)
-              await router.push({ pathname: `/posts/[postId]`, query: { postId: updated.id } })
-            } catch (error: any) {
-              console.error(error)
-              return {
-                [FORM_ERROR]: error.toString(),
-              }
-            }
-          }}
-        />
       </div>
     </>
   )
@@ -78,6 +54,5 @@ const EditPostPage = () => {
 }
 
 EditPostPage.authenticate = true
-EditPostPage.getLayout = (page) => <Layout>{page}</Layout>
 
 export default EditPostPage

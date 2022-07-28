@@ -4,23 +4,33 @@ import React from "react"
 import { withBlitz } from "app/blitz-client"
 import "styles/global.css"
 import "styles/syntax.css"
+import Layout from "app/core/layouts/Layout"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
-    return <div>Error: You are not authenticated</div>
+    return (
+      <Layout>
+        <div>Error: You are not authenticated</div>
+      </Layout>
+    )
   } else if (error instanceof AuthorizationError) {
     return (
-      <ErrorComponent
-        statusCode={error.statusCode}
-        title="Sorry, you are not authorized to access this"
-      />
+      <Layout>
+        <ErrorComponent
+          statusCode={error.statusCode}
+          title="Sorry, you are not authorized to access this"
+        />
+      </Layout>
     )
   } else {
     return (
-      <ErrorComponent
-        statusCode={(error as any)?.statusCode || 400}
-        title={error.message || error.name}
-      />
+      <Layout>
+        {" "}
+        <ErrorComponent
+          statusCode={(error as any)?.statusCode || 400}
+          title={error.message || error.name}
+        />
+      </Layout>
     )
   }
 }
@@ -28,7 +38,9 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </ErrorBoundary>
   )
 }

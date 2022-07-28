@@ -3,7 +3,7 @@ import Head from "next/head"
 import Link from "next/link"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
-import Layout from "app/core/layouts/Layout"
+import div from "app/core/layouts/Layout"
 import getPosts from "app/posts/queries/getPosts"
 
 const ITEMS_PER_PAGE = 100
@@ -44,9 +44,9 @@ export const PostsList = () => {
 
 const PostsPage = () => {
   return (
-    <Layout>
+    <div className="container">
       <Head>
-        <title>Posts</title>
+        <title>Posts - Indent</title>
       </Head>
 
       <div>
@@ -60,8 +60,9 @@ const PostsPage = () => {
           <PostsList />
         </Suspense>
       </div>
-    </Layout>
+    </div>
   )
 }
 
+PostsPage.authenticate = true
 export default PostsPage

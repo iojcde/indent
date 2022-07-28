@@ -16,8 +16,7 @@ export default api(
           {
             clientID: env.GITHUB_ID as string,
             clientSecret: env.GITHUB_SECRET as string,
-            callbackURL:
-              "https://3000-iojcde-notething-c2sugtsyfg9.ws-us54.gitpod.io/api/auth/github/callback",
+            callbackURL: env.GITHUB_CALLBACK_URL as string,
           },
           async function (_token, _tokenSecret, profile, done) {
             const email = profile.emails && profile.emails[0]?.value

@@ -10,7 +10,7 @@ const Nav = () => (
       </h1>
       <div className="flex items-center gap-6 text-sm">
         <Link href="/posts/new">New</Link>
-        <Link href="/test">Test</Link>
+        <Link href="/posts">Posts</Link>
         <Link href="/about">About</Link>
       </div>
     </div>

@@ -1,13 +1,15 @@
+import { BlitzPage } from "@blitzjs/auth"
+import SEO from "app/core/components/SEO"
 import Layout from "app/core/layouts/Layout"
 
-
-
-const Home = () => {
+const Home:BlitzPage = () => {
   return (
-    <Layout title="Home" className="container">
-     Welcome to Notething!
-    </Layout>
+    <div className="container">
+      <SEO />
+      Welcome to Indent!
+    </div>
   )
 }
+Home.redirectAuthenticatedTo = "/posts/new"
 
 export default Home

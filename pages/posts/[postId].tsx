@@ -9,23 +9,25 @@ import { useParam } from "@blitzjs/next"
 import Layout from "app/core/layouts/Layout"
 import getPost from "app/posts/queries/getPost"
 import deletePost from "app/posts/mutations/deletePost"
+import SEO from "app/core/components/SEO"
+import PostView from "app/core/components/PostView"
 
 export const Post = () => {
   const router = useRouter()
-  const postId = useParam("postId", "number")
+  const postId = useParam("postId", "string")
   const [deletePostMutation] = useMutation(deletePost)
   const [post] = useQuery(getPost, { id: postId })
 
   return (
     <>
-      <Head>
-        <title>Post {post.id}</title>
-      </Head>
+      <SEO title={post.title + " - Indent"} />
 
       <div>
-        <h1>Post {post.id}</h1>
-        <pre>{JSON.stringify(post, null, 2)}</pre>
+        <h1 className="text-5xl font-semibold container my-6">{post.title}</h1>
 
+        <div className="flex flex-col gap-8 items-center px-6">
+          <PostView files={post.files}  />
+        </div>
         <Link href={{ pathname: "/posts/[postId]/edit", query: { postId: post.id } }}>
           <a>Edit</a>
         </Link>
@@ -50,11 +52,11 @@ export const Post = () => {
 const ShowPostPage = () => {
   return (
     <div>
-      <p>
+      <div className="container">
         <Link href={{ pathname: "/posts" }}>
           <a>Posts</a>
         </Link>
-      </p>
+      </div>
 
       <Suspense fallback={<div>Loading...</div>}>
         <Post />
@@ -64,6 +66,5 @@ const ShowPostPage = () => {
 }
 
 ShowPostPage.authenticate = true
-ShowPostPage.getLayout = (page) => <Layout>{page}</Layout>
 
 export default ShowPostPage

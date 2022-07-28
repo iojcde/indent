@@ -19,7 +19,11 @@ export default async function Get__ModelNames(input: GetPostsInput, ctx: Ctx) {
     take: input.take,
     count: () => db.post.count({ where: input.where }),
     query: (paginateArgs) =>
-      db.post.findMany({ ...paginateArgs, where: input.where, orderBy: input.orderBy }),
+      db.post.findMany({
+        ...paginateArgs,
+        where: { userId: ctx.session.userId as number, ...input.where },
+        orderBy: input.orderBy,
+      }),
   })
 
   return {

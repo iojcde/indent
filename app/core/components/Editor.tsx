@@ -19,7 +19,7 @@ export interface File {
 }
 
 const Preview: React.FC<{ content: string }> = ({ content }) => (
-  <div className="overflow-y-scroll w-full h-full float-right bg-white border rounded-r-md ">
+  <div className="overflow-y-auto w-full h-full bg-white border rounded-r-md ">
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings, [rehypePrism, { ignoreMissing: true }]]}
@@ -36,7 +36,8 @@ const Editor: React.FC<{
   remove?: () => void
   setFilename: (filename: string) => void
   onContentChange: React.ChangeEventHandler
-}> = ({ filename, content, onContentChange }) => {
+  readonly?: boolean
+}> = ({ filename, content, onContentChange, readonly }) => {
   const [layout, setLayout] = useState<"editor" | "both" | "preview">("editor")
 
   const ref = useRef<TextareaMarkdownRef>(null)
@@ -46,6 +47,7 @@ const Editor: React.FC<{
       <div className={`block border rounded-lg p-4  `}>
         <div className="flex justify-between">
           <input
+          readOnly={readonly}
             placeholder={filename ? filename : "asdf.md"}
             className="p-2 rounded-md outline-none border "
           />
@@ -87,13 +89,16 @@ const Editor: React.FC<{
           </RadioGroup>
         </div>
 
-        <div className="relative h-[65vh] mt-4">
+        <div className="relative min-h-[60vh] mt-4">
           {layout == "editor" && (
             <TextareaMarkdown.Wrapper ref={ref}>
               <textarea
+                readOnly={readonly}
                 value={content}
                 onChange={onContentChange}
-                className="prose max-w-none prose-sm prose-neutral outline-none scrollbar p-4 w-full border font-mono h-full resize-none rounded-md"
+                className={`prose max-w-none prose-sm prose-neutral outline-none scrollbar p-4 w-full border font-mono h-full resize-none rounded-md ${
+                  readonly ? "" : ""
+                }`}
               />
             </TextareaMarkdown.Wrapper>
           )}
@@ -105,6 +110,7 @@ const Editor: React.FC<{
                 <TextareaMarkdown.Wrapper ref={ref}>
                   <textarea
                     value={content}
+                    readOnly={readonly}
                     onChange={onContentChange}
                     className="prose max-w-none prose-sm prose-neutral outline-none scrollbar p-4 w-full border font-mono rounded-l-md h-full resize-none "
                   />

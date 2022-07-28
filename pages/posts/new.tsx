@@ -1,14 +1,15 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
-import Layout from "app/core/layouts/Layout"
+import div from "app/core/layouts/Layout"
 import createPost from "app/posts/mutations/createPost"
 import EditorList from "app/core/components/EditorList"
 import { useCallback, useMemo, useState } from "react"
 import { File } from "app/core/components/Editor"
 import { v4 as generateUUID } from "uuid"
+import { BlitzPage } from "@blitzjs/next"
 
-const NewPostPage = () => {
+const NewPostPage: BlitzPage = () => {
   const router = useRouter()
 
   const emptyFile = useMemo<File[]>(
@@ -46,7 +47,7 @@ const NewPostPage = () => {
   )
 
   return (
-    <Layout title={"Create New Post"} className="px-6">
+    <div className="px-6">
       <div className="container my-6">
         <h1 className="text-4xl font-semibold">Create New Post</h1>
       </div>
@@ -58,28 +59,42 @@ const NewPostPage = () => {
           files={files}
         />
       </div>
-      <button
-        onClick={() => {
-          setFiles([
-            ...files,
-            {
-              filename: "",
-              content: "",
-              id: generateUUID(),
-            },
-          ])
-        }}
-      >
-        Add a File
-      </button>
-      <p>
+
+      <div className="container flex flex-col gap-4">
+        <button
+          onClick={async () => {
+            try {
+              const post = await createPostMutation({ title: "asdf", files })
+              await router.push({ pathname: `/posts/[postId]`, query: { postId: post.id } })
+              post.id
+            } catch (error) {
+              alert(error)
+            }
+          }}
+        >
+          Create Public
+        </button>
+        <button
+          onClick={() => {
+            setFiles([
+              ...files,
+              {
+                filename: "",
+                content: "",
+                id: generateUUID(),
+              },
+            ])
+          }}
+        >
+          Add a File
+        </button>
         <Link href={{ pathname: "/posts" }}>
           <a>Posts</a>
         </Link>
-      </p>
-    </Layout>
+      </div>
+    </div>
   )
 }
 
-
+NewPostPage.authenticate = { redirectTo: "/auth/login" }
 export default NewPostPage
